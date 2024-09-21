@@ -103,37 +103,43 @@ $recordId = $_GET['id'] ?? null;
                     $columns = getTableColumns($db, $currentTable);
                     $primaryKey = getPrimaryKeyColumn($db, $currentTable);
                     ?>
-                    <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
-                        <thead>
-                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
-                                <?php foreach ($columns as $column): ?>
-                                    <th class="py-3 px-6 text-left"><?= htmlspecialchars($column) ?></th>
-                                <?php endforeach; ?>
-                                <th class="py-3 px-6 text-left">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="text-gray-600 text-sm font-light">
-                            <?php foreach ($data as $row): ?>
-                                <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                    <?php foreach ($columns as $column): ?>
-                                        <td class="py-3 px-6 text-left whitespace-nowrap">
-                                            <?= htmlspecialchars($row[$column] ?? '') ?>
-                                        </td>
+                    <div class="w-full overflow-x-auto">
+                        <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
+                            <table class="min-w-full">
+                                <thead>
+                                    <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                                        <?php foreach ($columns as $column): ?>
+                                            <th class="py-3 px-6 text-left whitespace-nowrap"><?= htmlspecialchars($column) ?></th>
+                                        <?php endforeach; ?>
+                                        <th class="py-3 px-6 text-left">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-600 text-sm font-light">
+                                    <?php foreach ($data as $row): ?>
+                                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                            <?php foreach ($columns as $column): ?>
+                                                <td class="py-3 px-6 text-left">
+                                                    <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: 255px;">
+                                                        <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
+                                                    </div>
+                                                </td>
+                                            <?php endforeach; ?>
+                                            <td class="py-3 px-6 text-left whitespace-nowrap">
+                                                <?php
+                                                $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
+                                                if ($idForView !== null):
+                                                ?>
+                                                    <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?>" class="text-blue-600 hover:text-blue-900">View</a>
+                                                <?php else: ?>
+                                                    <span class="text-gray-400">No ID</span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
                                     <?php endforeach; ?>
-                                    <td class="py-3 px-6 text-left">
-                                        <?php
-                                        $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
-                                        if ($idForView !== null):
-                                        ?>
-                                            <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?>" class="text-blue-600 hover:text-blue-900">View</a>
-                                        <?php else: ?>
-                                            <span class="text-gray-400">No ID</span>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                     
                     <!-- Pagination -->
                     <div class="mt-4 flex justify-between items-center">
