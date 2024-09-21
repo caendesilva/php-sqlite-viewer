@@ -160,7 +160,7 @@ $recordId = $_GET['id'] ?? null;
                         <?php foreach ($record as $column => $value): ?>
                             <div class="py-3 px-6 border-b border-gray-200">
                                 <strong><?= htmlspecialchars($column) ?>:</strong>
-                                <?= htmlspecialchars($value) ?>
+                                <?= $value ? htmlspecialchars($value) : '<i>null</i>' ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
