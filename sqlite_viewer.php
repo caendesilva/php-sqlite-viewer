@@ -129,7 +129,7 @@ $recordId = $_GET['id'] ?? null;
                                 $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
                                 $rowUrl = $idForView !== null ? "?table=" . urlencode($currentTable) . "&action=view&id=" . $idForView : "#";
                                 ?>
-                                <tr class="border-b border-gray-200 hover:bg-gray-200 transition-colors duration-50" onclick="window.location='<?= $rowUrl ?>'">
+                                <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="window.location='<?= $rowUrl ?>'">
                                     <?php foreach ($columns as $column): ?>
                                         <td class="py-3 px-6 text-left">
                                             <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: 255px;">
