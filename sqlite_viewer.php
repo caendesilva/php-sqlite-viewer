@@ -129,7 +129,7 @@ $recordId = $_GET['id'] ?? null;
                                 $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
                                 $rowUrl = $idForView !== null ? "?table=" . urlencode($currentTable) . "&action=view&id=" . $idForView : "#";
                                 ?>
-                                <tr class="border-b border-gray-200 hover:bg-gray-200 transition-colors duration-50" onclick="handleRowClick(event, '<?= $rowUrl ?>')">
+                                <tr class="border-b border-gray-200 hover:bg-gray-200 transition-colors duration-50" onclick="window.location='<?= $rowUrl ?>'">
                                     <?php foreach ($columns as $column): ?>
                                         <td class="py-3 px-6 text-left">
                                             <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: 255px;">
@@ -141,26 +141,6 @@ $recordId = $_GET['id'] ?? null;
                             <?php endforeach; ?>
                             </tbody>
                         </table>
-
-                        <script>
-                            function handleRowClick(event, url) {
-                                // Check if the clicked element or its parent is a text node
-                                let target = event.target;
-                                while (target != null && target !== event.currentTarget) {
-                                    console.log(event.target.nodeName);
-                                    if (target.nodeType === Node.TEXT_NODE ||
-                                        (target.nodeType === Node.ELEMENT_NODE &&
-                                            ['TD', 'DIV'].includes(target.nodeName))) {
-                                        // If it's text or a container of text, don't navigate
-                                        return;
-                                    }
-                                    target = target.parentNode;
-                                    console.log(target);
-                                }
-                                // If we've reached here, it's safe to navigate
-                                window.location.href = url;
-                            }
-                        </script>
                     </div>
                 </div>
 
