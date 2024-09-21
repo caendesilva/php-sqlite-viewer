@@ -25,10 +25,10 @@ function getTables($db) {
     return $tables;
 }
 
-function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null, $sortOrder = 'ASC') {
+function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null, $sortOrder = null) {
     $offset = ($page - 1) * $perPage;
     $query = "SELECT *, rowid FROM '$table'";
-    if ($sortColumn) {
+    if ($sortColumn && $sortOrder) {
         $query .= " ORDER BY " . SQLite3::escapeString($sortColumn) . " $sortOrder";
     }
     $query .= " LIMIT $perPage OFFSET $offset";
@@ -83,7 +83,7 @@ $action = $_GET['action'] ?? 'list';
 $recordId = $_GET['id'] ?? null;
 
 $sortColumn = $_GET['sort'] ?? null;
-$sortOrder = $_GET['order'] ?? 'ASC';
+$sortOrder = $_GET['order'] ?? null;
 
 ?>
 <!DOCTYPE html>
@@ -128,11 +128,21 @@ $sortOrder = $_GET['order'] ?? 'ASC';
                             <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                 <?php foreach ($columns as $column): ?>
                                     <?php
-                                    $newSortOrder = ($sortColumn === $column && $sortOrder === 'ASC') ? 'DESC' : 'ASC';
-                                    $sortIndicator = ($sortColumn === $column) ? ($sortOrder === 'ASC' ? '▲' : '▼') : '';
+                                    $newSortOrder = 'ASC';
+                                    $sortIndicator = '';
+                                    if ($sortColumn === $column) {
+                                        if ($sortOrder === 'ASC') {
+                                            $newSortOrder = 'DESC';
+                                            $sortIndicator = '▲';
+                                        } elseif ($sortOrder === 'DESC') {
+                                            $newSortOrder = '';
+                                            $sortIndicator = '▼';
+                                        }
+                                    }
+                                    $sortParams = $newSortOrder ? "&sort=$column&order=$newSortOrder" : "";
                                     ?>
                                     <th class="py-3 px-6 text-left whitespace-nowrap">
-                                        <a href="?table=<?= urlencode($currentTable) ?>&sort=<?= urlencode($column) ?>&order=<?= $newSortOrder ?>&page=<?= $page ?>" class="hover:text-gray-900">
+                                        <a href="?table=<?= urlencode($currentTable) ?><?= $sortParams ?>&page=<?= $page ?>" class="hover:text-gray-900">
                                             <?= htmlspecialchars($column) ?> <?= $sortIndicator ?>
                                         </a>
                                     </th>
@@ -155,7 +165,7 @@ $sortOrder = $_GET['order'] ?? 'ASC';
                                         $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
                                         if ($idForView !== null):
                                             ?>
-                                            <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?>" class="text-blue-600 hover:text-blue-900">View</a>
+                                            <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : "" ?>" class="text-blue-600 hover:text-blue-900">View</a>
                                         <?php else: ?>
                                             <span class="text-gray-400">No ID</span>
                                         <?php endif; ?>
@@ -170,10 +180,10 @@ $sortOrder = $_GET['order'] ?? 'ASC';
                 <!-- Pagination -->
                 <div class="mt-4 flex justify-between items-center">
                     <?php if ($page > 1): ?>
-                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page - 1 ?>&sort=<?= urlencode($sortColumn) ?>&order=<?= $sortOrder ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</a>
+                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page - 1 ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : "" ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</a>
                     <?php endif; ?>
                     <?php if (count($data) == $perPage): ?>
-                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page + 1 ?>&sort=<?= urlencode($sortColumn) ?>&order=<?= $sortOrder ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</a>
+                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page + 1 ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : "" ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</a>
                     <?php endif; ?>
                 </div>
 
@@ -190,7 +200,7 @@ $sortOrder = $_GET['order'] ?? 'ASC';
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <a href="?table=<?= urlencode($currentTable) ?>&sort=<?= urlencode($sortColumn) ?>&order=<?= $sortOrder ?>" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Table</a>
+                <a href="?table=<?= urlencode($currentTable) ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : "" ?>" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Table</a>
             <?php endif; ?>
 
         <?php else: ?>
