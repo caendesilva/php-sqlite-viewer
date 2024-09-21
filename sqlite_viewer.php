@@ -121,15 +121,12 @@ $recordId = $_GET['id'] ?? null;
                                 <?php foreach ($columns as $column): ?>
                                     <th class="py-3 px-6 text-left whitespace-nowrap"><?= htmlspecialchars($column) ?></th>
                                 <?php endforeach; ?>
+                                <th class="py-3 px-6 text-left">Actions</th>
                             </tr>
                             </thead>
                             <tbody class="text-gray-600 text-sm font-light">
                             <?php foreach ($data as $row): ?>
-                                <?php
-                                $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
-                                $rowUrl = $idForView !== null ? "?table=" . urlencode($currentTable) . "&action=view&id=" . $idForView : "#";
-                                ?>
-                                <tr class="border-b border-gray-200 hover:bg-gray-100 cursor-pointer" onclick="window.location='<?= $rowUrl ?>'">
+                                <tr class="border-b border-gray-200 hover:bg-gray-100">
                                     <?php foreach ($columns as $column): ?>
                                         <td class="py-3 px-6 text-left">
                                             <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: 255px;">
@@ -137,6 +134,16 @@ $recordId = $_GET['id'] ?? null;
                                             </div>
                                         </td>
                                     <?php endforeach; ?>
+                                    <td class="py-3 px-6 text-left whitespace-nowrap">
+                                        <?php
+                                        $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
+                                        if ($idForView !== null):
+                                            ?>
+                                            <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?>" class="text-blue-600 hover:text-blue-900">View</a>
+                                        <?php else: ?>
+                                            <span class="text-gray-400">No ID</span>
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                             <?php endforeach; ?>
                             </tbody>
