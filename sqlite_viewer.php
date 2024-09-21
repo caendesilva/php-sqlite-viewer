@@ -1,7 +1,7 @@
 <?php
 // SQLite Viewer written in PHP and Tailwind CSS.
 // Usage: php -S localhost:8000 sqlite_viewer.php
-// Access in browser: http://localhost:8000?db=/path/to/your/database.sqlite
+// Access in browser: http://localhost:8000
 
 // Read database path from environment variable or command line argument
 $dbPath = getenv('SQLITE_DB_PATH') ?: ($argv[1] ?? null);
