@@ -1,5 +1,5 @@
 <?php
-// SQLite Viewer
+// SQLite Viewer written in PHP.
 // Usage: php -S localhost:8000 sqlite_viewer.php
 // Access in browser: http://localhost:8000?db=/path/to/your/database.sqlite
 
