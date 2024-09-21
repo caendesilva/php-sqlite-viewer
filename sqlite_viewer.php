@@ -126,7 +126,7 @@ $recordId = $_GET['id'] ?? null;
                             </thead>
                             <tbody class="text-gray-600 text-sm font-light">
                             <?php foreach ($data as $row): ?>
-                                <tr class="border-b border-gray-200 hover:bg-gray-200 transition-colors duration-50">
+                                <tr class="border-b border-gray-200 hover:bg-[#eaecef] transition-colors duration-50">
                                     <?php foreach ($columns as $column): ?>
                                         <td class="py-3 px-6 text-left">
                                             <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: 255px;">
