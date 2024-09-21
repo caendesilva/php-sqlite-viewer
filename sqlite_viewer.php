@@ -59,6 +59,16 @@ function getPrimaryKeyColumn($db, $table) {
     return null;
 }
 
+function format_database_value($value) {
+    if (is_null($value)) {
+        return '<span class="text-gray-400">NULL</span>';
+    } elseif ($value === '') {
+        return '<span class="text-gray-400">Empty string</span>';
+    } else {
+        return htmlspecialchars($value);
+    }
+}
+
 $tables = getTables($db);
 $currentTable = $_GET['table'] ?? $tables[0] ?? null;
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
@@ -160,7 +170,7 @@ $recordId = $_GET['id'] ?? null;
                         <?php foreach ($record as $column => $value): ?>
                             <div class="py-3 px-6 border-b border-gray-200">
                                 <strong><?= htmlspecialchars($column) ?>:</strong>
-                                <?= $value ? htmlspecialchars($value) : '<i>null</i>' ?>
+                                <?= format_database_value($value) ?>
                             </div>
                         <?php endforeach; ?>
                     </div>
