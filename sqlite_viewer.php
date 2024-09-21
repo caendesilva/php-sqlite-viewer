@@ -25,9 +25,14 @@ function getTables($db) {
     return $tables;
 }
 
-function getTableData($db, $table, $page = 1, $perPage = 20) {
+function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null, $sortOrder = 'ASC') {
     $offset = ($page - 1) * $perPage;
-    $result = $db->query("SELECT *, rowid FROM '$table' LIMIT $perPage OFFSET $offset");
+    $query = "SELECT *, rowid FROM '$table'";
+    if ($sortColumn) {
+        $query .= " ORDER BY " . SQLite3::escapeString($sortColumn) . " $sortOrder";
+    }
+    $query .= " LIMIT $perPage OFFSET $offset";
+    $result = $db->query($query);
     $data = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $data[] = $row;
@@ -77,6 +82,9 @@ $perPage = 100;
 $action = $_GET['action'] ?? 'list';
 $recordId = $_GET['id'] ?? null;
 
+$sortColumn = $_GET['sort'] ?? null;
+$sortOrder = $_GET['order'] ?? 'ASC';
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +117,7 @@ $recordId = $_GET['id'] ?? null;
 
             <?php if ($action === 'list'): ?>
                 <?php
-                $data = getTableData($db, $currentTable, $page, $perPage);
+                $data = getTableData($db, $currentTable, $page, $perPage, $sortColumn, $sortOrder);
                 $columns = getTableColumns($db, $currentTable);
                 $primaryKey = getPrimaryKeyColumn($db, $currentTable);
                 ?>
@@ -119,7 +127,15 @@ $recordId = $_GET['id'] ?? null;
                             <thead>
                             <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
                                 <?php foreach ($columns as $column): ?>
-                                    <th class="py-3 px-6 text-left whitespace-nowrap"><?= htmlspecialchars($column) ?></th>
+                                    <?php
+                                    $newSortOrder = ($sortColumn === $column && $sortOrder === 'ASC') ? 'DESC' : 'ASC';
+                                    $sortIndicator = ($sortColumn === $column) ? ($sortOrder === 'ASC' ? '▲' : '▼') : '';
+                                    ?>
+                                    <th class="py-3 px-6 text-left whitespace-nowrap">
+                                        <a href="?table=<?= urlencode($currentTable) ?>&sort=<?= urlencode($column) ?>&order=<?= $newSortOrder ?>&page=<?= $page ?>" class="hover:text-gray-900">
+                                            <?= htmlspecialchars($column) ?> <?= $sortIndicator ?>
+                                        </a>
+                                    </th>
                                 <?php endforeach; ?>
                                 <th class="py-3 px-6 text-left">Actions</th>
                             </tr>
@@ -154,10 +170,10 @@ $recordId = $_GET['id'] ?? null;
                 <!-- Pagination -->
                 <div class="mt-4 flex justify-between items-center">
                     <?php if ($page > 1): ?>
-                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page - 1 ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</a>
+                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page - 1 ?>&sort=<?= urlencode($sortColumn) ?>&order=<?= $sortOrder ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</a>
                     <?php endif; ?>
                     <?php if (count($data) == $perPage): ?>
-                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page + 1 ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</a>
+                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page + 1 ?>&sort=<?= urlencode($sortColumn) ?>&order=<?= $sortOrder ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</a>
                     <?php endif; ?>
                 </div>
 
@@ -174,7 +190,7 @@ $recordId = $_GET['id'] ?? null;
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <a href="?table=<?= urlencode($currentTable) ?>" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Table</a>
+                <a href="?table=<?= urlencode($currentTable) ?>&sort=<?= urlencode($sortColumn) ?>&order=<?= $sortOrder ?>" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Table</a>
             <?php endif; ?>
 
         <?php else: ?>
