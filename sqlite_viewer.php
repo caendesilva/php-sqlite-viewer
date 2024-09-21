@@ -27,7 +27,7 @@ function getTables($db) {
 
 function getTableData($db, $table, $page = 1, $perPage = 20) {
     $offset = ($page - 1) * $perPage;
-    $result = $db->query("SELECT * FROM '$table' LIMIT $perPage OFFSET $offset");
+    $result = $db->query("SELECT *, rowid FROM '$table' LIMIT $perPage OFFSET $offset");
     $data = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $data[] = $row;
@@ -45,14 +45,24 @@ function getTableColumns($db, $table) {
 }
 
 function getRecordDetails($db, $table, $id) {
-    $result = $db->query("SELECT * FROM '$table' WHERE rowid = $id");
+    $result = $db->query("SELECT *, rowid FROM '$table' WHERE rowid = $id");
     return $result->fetchArray(SQLITE3_ASSOC);
+}
+
+function getPrimaryKeyColumn($db, $table) {
+    $result = $db->query("PRAGMA table_info('$table')");
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        if ($row['pk'] == 1) {
+            return $row['name'];
+        }
+    }
+    return null;
 }
 
 $tables = getTables($db);
 $currentTable = $_GET['table'] ?? $tables[0] ?? null;
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
-$perPage = 20;
+$perPage = 100;
 
 $action = $_GET['action'] ?? 'list';
 $recordId = $_GET['id'] ?? null;
@@ -91,6 +101,7 @@ $recordId = $_GET['id'] ?? null;
                     <?php
                     $data = getTableData($db, $currentTable, $page, $perPage);
                     $columns = getTableColumns($db, $currentTable);
+                    $primaryKey = getPrimaryKeyColumn($db, $currentTable);
                     ?>
                     <table class="w-full bg-white shadow-md rounded-lg overflow-hidden">
                         <thead>
@@ -104,13 +115,20 @@ $recordId = $_GET['id'] ?? null;
                         <tbody class="text-gray-600 text-sm font-light">
                             <?php foreach ($data as $row): ?>
                                 <tr class="border-b border-gray-200 hover:bg-gray-100">
-                                    <?php foreach ($row as $value): ?>
+                                    <?php foreach ($columns as $column): ?>
                                         <td class="py-3 px-6 text-left whitespace-nowrap">
-                                            <?= htmlspecialchars($value) ?>
+                                            <?= htmlspecialchars($row[$column] ?? '') ?>
                                         </td>
                                     <?php endforeach; ?>
                                     <td class="py-3 px-6 text-left">
-                                        <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $row['rowid'] ?>" class="text-blue-600 hover:text-blue-900">View</a>
+                                        <?php
+                                        $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
+                                        if ($idForView !== null):
+                                        ?>
+                                            <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?>" class="text-blue-600 hover:text-blue-900">View</a>
+                                        <?php else: ?>
+                                            <span class="text-gray-400">No ID</span>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
