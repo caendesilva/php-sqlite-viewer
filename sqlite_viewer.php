@@ -34,8 +34,8 @@ if (php_sapi_name() === 'cli') {
 
     putenv('SQLITE_DB_PATH='.$argv[1]);
 
-    // Get a random free port
-    $port = rand(49152, 65535);
+    // Check if a port is set in env or use a random port
+    $port = getenv('SQLITE_VIEWER_SERVER_PORT') ?: rand(49152, 65535);
 
     $process = proc_open("php -S localhost:$port ".__FILE__, $descriptor_spec, $pipes);
 
