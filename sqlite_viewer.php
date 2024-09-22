@@ -1,7 +1,11 @@
 <?php
 // SQLite Viewer written in PHP and Tailwind CSS.
-// Usage: php -S localhost:8000 sqlite_viewer.php
+// Usage: ./sqlite_viewer.php ./database/database.sqlite
 // Access in browser: http://localhost:8000
+
+// Tip: Add an alias to your shell profile for quick access,
+// e.g. alias db="php /usr/local/bin/sqlite_viewer.php"
+// and then run `db ./database/database.sqlite`
 
 // If running in console, start a web server
 if (php_sapi_name() === 'cli') {
