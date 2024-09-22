@@ -21,6 +21,8 @@ jobs:
       - name: Setup PHP on macOS
         if: runner.os == 'macOS'
         run: |
+          uname
+          uname -m
           curl -L https://dl.static-php.dev/static-php-cli/common/php-8.3.11-cli-macos-$(uname -m).tar.gz -o php.tar.gz
           tar -xzf php.tar.gz
           sudo mv php /usr/local/bin/php
@@ -35,5 +37,6 @@ jobs:
         shell: bash
 
       - name: Debug
+        if: always()
         run: cat server.log
         shell: bash
