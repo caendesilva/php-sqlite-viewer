@@ -20,14 +20,20 @@ jobs:
 
       - name: Setup PHP on macOS
         if: runner.os == 'macOS'
-        uses: shivammathur/setup-php@v2
+        run: |
+          curl -L https://dl.static-php.dev/static-php-cli/common/php-8.3.11-cli-macos-$(uname -m).tar.gz -o php.tar.gz
+          tar -xzf php.tar.gz
+          sudo mv php /usr/local/bin/php
+          php --version
 
-      - name: Check PHP
-        run: php -v
-
-      - name: Start server
-        run: php sqlite_viewer.php test/database.sqlite --port 9000 &
+      - name: Run app
+        run: php sqlite_viewer.php test/database.sqlite --port 9000 > server.log 2>&1 &
         shell: bash
 
       - name: Run tests
         run: php test/test.php
+        shell: bash
+
+      - name: Debug
+        run: cat server.log
+        shell: bash
