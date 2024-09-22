@@ -1,17 +1,27 @@
 name: PHP Tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "main" ]
+  pull_request: 
+    branches: [ "main" ]
 
 jobs:
   test:
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Setup PHP on macOS
+        if: runner.os == 'macOS'
+        run: |
+          brew install php
 
       - name: Check PHP
         run: php -v
