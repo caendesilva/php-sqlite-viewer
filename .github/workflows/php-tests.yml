@@ -1,0 +1,22 @@
+name: PHP Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Start server
+        run: |
+          php sqlite_viewer.php test/database.sqlite --port 9000
+
+      - name: Run tests
+        run: |
+          php test/test.php
