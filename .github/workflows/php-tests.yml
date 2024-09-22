@@ -23,13 +23,17 @@ jobs:
         run: |
           uname
           uname -m
-          curl -L https://dl.static-php.dev/static-php-cli/common/php-8.3.11-cli-macos-$(uname -m).tar.gz -o php.tar.gz
+          curl -L https://dl.static-php.dev/static-php-cli/common/php-8.3.11-cli-macos-aarch64.tar.gz -o php.tar.gz
           tar -xzf php.tar.gz
           sudo mv php /usr/local/bin/php
           php --version
 
       - name: Run app
         run: php sqlite_viewer.php test/database.sqlite --port 9000 > server.log 2>&1 &
+        shell: bash
+
+      - name: Wait for server to start
+        run: sleep 5
         shell: bash
 
       - name: Run tests
