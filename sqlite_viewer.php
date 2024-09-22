@@ -28,7 +28,11 @@ if (php_sapi_name() === 'cli') {
     ];
 
     putenv("SQLITE_DB_PATH=".$argv[1]);
-    $process = proc_open("php -S localhost:8000 " . __FILE__, $descriptorspec, $pipes);
+
+    // Get a random free port
+    $port = rand(49152, 65535);
+
+    $process = proc_open("php -S localhost:$port " . __FILE__, $descriptorspec, $pipes);
 
     if (is_resource($process)) {
         // Close stdin as we don't need to send input
