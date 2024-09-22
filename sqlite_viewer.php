@@ -8,6 +8,11 @@
 // e.g. alias db="php /usr/local/bin/sqlite_viewer.php"
 // and then run `db ./database/database.sqlite`
 
+// Todo: Remove in production
+if (file_exists(__DIR__ . '/dev-lib.php')) {
+    require __DIR__ . '/dev-lib.php';
+}
+
 // If running in console, start a web server
 if (php_sapi_name() === 'cli') {
     if (empty($argv[1])) {
