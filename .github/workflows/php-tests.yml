@@ -20,14 +20,14 @@ jobs:
 
       - name: Setup PHP on macOS
         if: runner.os == 'macOS'
-        run: |
-          brew install php
+        uses: shivammathur/setup-php@v2
 
       - name: Check PHP
         run: php -v
 
       - name: Start server
         run: php sqlite_viewer.php test/database.sqlite --port 9000 &
+        shell: bash
 
       - name: Run tests
         run: php test/test.php
