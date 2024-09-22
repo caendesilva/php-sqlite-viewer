@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 // SQLite Viewer written in PHP and Tailwind CSS.
 // Usage: php -S localhost:8000 sqlite_viewer.php
