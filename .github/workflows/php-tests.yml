@@ -27,7 +27,7 @@ jobs:
         run: php -v
 
       - name: Start server
-        run: php sqlite_viewer.php test/database.sqlite --port 9000
+        run: php sqlite_viewer.php test/database.sqlite --port 9000 &
 
       - name: Run tests
         run: php test/test.php
