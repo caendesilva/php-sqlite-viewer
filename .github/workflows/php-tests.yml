@@ -21,8 +21,6 @@ jobs:
       - name: Setup PHP on macOS
         if: runner.os == 'macOS'
         run: |
-          uname
-          uname -m
           curl -L https://dl.static-php.dev/static-php-cli/common/php-8.3.11-cli-macos-aarch64.tar.gz -o php.tar.gz
           tar -xzf php.tar.gz
           sudo mv php /usr/local/bin/php
@@ -33,7 +31,11 @@ jobs:
         shell: bash
 
       - name: Wait for server to start
-        run: sleep 5
+        run: |
+          for i in {1..10}; do
+              curl -s http://localhost:9000 && break
+              sleep 1
+          done
         shell: bash
 
       - name: Run tests
