@@ -4,6 +4,25 @@
 // Usage: php -S localhost:8000 sqlite_viewer.php
 // Access in browser: http://localhost:8000
 
+// If running in console, start a web server
+if (php_sapi_name() === 'cli') {
+    if (empty($argv[1])) {
+        echo "Error: Please provide the path to the SQLite database as an argument.\n";
+        echo "Usage: ".$argv[0]." ./database/database.sqlite\n";
+        exit(1);
+    }
+
+    if (!file_exists($argv[1])) {
+        echo "Error: Database file not found: ".$argv[1]."\n";
+        exit(1);
+    }
+
+    putenv("SQLITE_DB_PATH=".$argv[1]);
+    exec("php -S localhost:8000 " . __FILE__ . " &");
+
+    return;
+}
+
 // Read database path from environment variable or command line argument
 $dbPath = getenv('SQLITE_DB_PATH') ?: ($argv[1] ?? null);
 
