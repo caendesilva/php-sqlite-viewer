@@ -1,6 +1,7 @@
 <?php
 
-function dd() {
+function dd()
+{
     if (php_sapi_name() === 'cli') {
         $args = func_get_args();
         foreach ($args as $arg) {
@@ -15,10 +16,11 @@ function dd() {
         echo '</pre>';
     }
 
-    die();
+    exit();
 }
 
-function bench($callable, $times = 1000) {
+function bench($callable, $times = 1000)
+{
     $start = microtime(true);
     for ($i = 0; $i < $times; $i++) {
         $callable();
@@ -33,7 +35,7 @@ function bench($callable, $times = 1000) {
 
     echo "Time: {$time}ms\n";
     echo "Times: {$times}\n";
-    echo "Average: " . round($time / $times, 8) . "ms\n";
+    echo 'Average: '.round($time / $times, 8)."ms\n";
 
-    die();
+    exit();
 }

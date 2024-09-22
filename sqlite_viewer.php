@@ -9,35 +9,35 @@
 // and then run `db ./database/database.sqlite`
 
 // Todo: Remove in production
-if (file_exists(__DIR__ . '/dev-lib.php')) {
-    require __DIR__ . '/dev-lib.php';
+if (file_exists(__DIR__.'/dev-lib.php')) {
+    require __DIR__.'/dev-lib.php';
 }
 
 // If running in console, start a web server
 if (php_sapi_name() === 'cli') {
     if (empty($argv[1])) {
         echo "Error: Please provide the path to the SQLite database as an argument.\n";
-        echo "Usage: ".$argv[0]." ./database/database.sqlite\n";
+        echo 'Usage: '.$argv[0]." ./database/database.sqlite\n";
         exit(1);
     }
 
-    if (!file_exists($argv[1])) {
-        echo "Error: Database file not found: ".$argv[1]."\n";
+    if (! file_exists($argv[1])) {
+        echo 'Error: Database file not found: '.$argv[1]."\n";
         exit(1);
     }
 
-    $descriptorspec = [
-        0 => ["pipe", "r"],  // stdin
-        1 => ["pipe", "w"],  // stdout
-        2 => ["pipe", "w"]   // stderr
+    $descriptor_spec = [
+        0 => ['pipe', 'r'],  // stdin
+        1 => ['pipe', 'w'],  // stdout
+        2 => ['pipe', 'w'],   // stderr
     ];
 
-    putenv("SQLITE_DB_PATH=".$argv[1]);
+    putenv('SQLITE_DB_PATH='.$argv[1]);
 
     // Get a random free port
     $port = rand(49152, 65535);
 
-    $process = proc_open("php -S localhost:$port " . __FILE__, $descriptorspec, $pipes);
+    $process = proc_open("php -S localhost:$port ".__FILE__, $descriptor_spec, $pipes);
 
     if (is_resource($process)) {
         // Close stdin as we don't need to send input
@@ -46,7 +46,7 @@ if (php_sapi_name() === 'cli') {
         // Read output in real-time
         while ($line = fgets($pipes[2])) {
             // Filter out unwanted log lines
-            if (!preg_match('/^\[.*\] \[::1\]:\d+ Accepted|Closing/', $line)) {
+            if (! preg_match('/^\[.*\] \[::1\]:\d+ Accepted|Closing/', $line)) {
                 echo $line; // Output the line if it doesn't match the pattern
             }
         }
@@ -62,30 +62,33 @@ if (php_sapi_name() === 'cli') {
 // Read database path from environment variable or command line argument
 $dbPath = getenv('SQLITE_DB_PATH') ?: ($argv[1] ?? null);
 
-if (!$dbPath) {
-    die("Please provide a database path via SQLITE_DB_PATH environment variable or as a command line argument.");
+if (! $dbPath) {
+    exit('Please provide a database path via SQLITE_DB_PATH environment variable or as a command line argument.');
 }
 
-if (!file_exists($dbPath)) {
-    die("Database file not found: $dbPath");
+if (! file_exists($dbPath)) {
+    exit("Database file not found: $dbPath");
 }
 
 $db = new SQLite3($dbPath);
 
-function getTables($db) {
+function getTables($db)
+{
     $tables = [];
     $result = $db->query("SELECT name FROM sqlite_master WHERE type='table'");
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $tables[] = $row['name'];
     }
+
     return $tables;
 }
 
-function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null, $sortOrder = null) {
+function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null, $sortOrder = null)
+{
     $offset = ($page - 1) * $perPage;
     $query = "SELECT *, rowid FROM '$table'";
     if ($sortColumn && $sortOrder) {
-        $query .= " ORDER BY " . SQLite3::escapeString($sortColumn) . " $sortOrder";
+        $query .= ' ORDER BY '.SQLite3::escapeString($sortColumn)." $sortOrder";
     }
     $query .= " LIMIT $perPage OFFSET $offset";
     $result = $db->query($query);
@@ -93,34 +96,42 @@ function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null,
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $data[] = $row;
     }
+
     return $data;
 }
 
-function getTableColumns($db, $table) {
+function getTableColumns($db, $table)
+{
     $result = $db->query("PRAGMA table_info('$table')");
     $columns = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         $columns[] = $row['name'];
     }
+
     return $columns;
 }
 
-function getRecordDetails($db, $table, $id) {
+function getRecordDetails($db, $table, $id)
+{
     $result = $db->query("SELECT *, rowid FROM '$table' WHERE rowid = $id");
+
     return $result->fetchArray(SQLITE3_ASSOC);
 }
 
-function getPrimaryKeyColumn($db, $table) {
+function getPrimaryKeyColumn($db, $table)
+{
     $result = $db->query("PRAGMA table_info('$table')");
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
         if ($row['pk'] == 1) {
             return $row['name'];
         }
     }
+
     return null;
 }
 
-function format_database_value($value) {
+function format_database_value($value)
+{
     if (is_null($value)) {
         return '<span class="text-gray-400">NULL</span>';
     } elseif ($value === '') {
@@ -195,7 +206,7 @@ $sortOrder = $_GET['order'] ?? null;
                                             $sortIndicator = '▼';
                                         }
                                     }
-                                    $sortParams = $newSortOrder ? "&sort=$column&order=$newSortOrder" : "";
+                                    $sortParams = $newSortOrder ? "&sort=$column&order=$newSortOrder" : '';
                                     ?>
                                     <th class="py-3 px-6 text-left whitespace-nowrap">
                                         <a href="?table=<?= urlencode($currentTable) ?><?= $sortParams ?>&page=<?= $page ?>" class="hover:text-gray-900">
@@ -221,7 +232,7 @@ $sortOrder = $_GET['order'] ?? null;
                                         $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
                                         if ($idForView !== null):
                                             ?>
-                                            <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : "" ?>" class="text-blue-600 hover:text-blue-900">View</a>
+                                            <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="text-blue-600 hover:text-blue-900">View</a>
                                         <?php else: ?>
                                             <span class="text-gray-400">No ID</span>
                                         <?php endif; ?>
@@ -236,10 +247,10 @@ $sortOrder = $_GET['order'] ?? null;
                 <!-- Pagination -->
                 <div class="mt-4 flex justify-between items-center">
                     <?php if ($page > 1): ?>
-                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page - 1 ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : "" ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</a>
+                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page - 1 ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</a>
                     <?php endif; ?>
                     <?php if (count($data) == $perPage): ?>
-                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page + 1 ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : "" ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</a>
+                        <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page + 1 ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</a>
                     <?php endif; ?>
                 </div>
 
@@ -256,7 +267,7 @@ $sortOrder = $_GET['order'] ?? null;
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <a href="?table=<?= urlencode($currentTable) ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : "" ?>" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Table</a>
+                <a href="?table=<?= urlencode($currentTable) ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Table</a>
             <?php endif; ?>
 
         <?php else: ?>
