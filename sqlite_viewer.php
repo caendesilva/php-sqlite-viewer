@@ -20,8 +20,31 @@ if (php_sapi_name() === 'cli') {
         exit(1);
     }
 
+    $descriptorspec = [
+        0 => ["pipe", "r"],  // stdin
+        1 => ["pipe", "w"],  // stdout
+        2 => ["pipe", "w"]   // stderr
+    ];
+
     putenv("SQLITE_DB_PATH=".$argv[1]);
-    exec("php -S localhost:8000 " . __FILE__ . " &");
+    $process = proc_open("php -S localhost:8000 " . __FILE__, $descriptorspec, $pipes);
+
+    if (is_resource($process)) {
+        // Close stdin as we don't need to send input
+        fclose($pipes[0]);
+
+        // Read output in real-time
+        while ($line = fgets($pipes[2])) {
+            // Filter out unwanted log lines
+            if (!preg_match('/^\[.*\] \[::1\]:\d+ Accepted|Closing/', $line)) {
+                echo $line; // Output the line if it doesn't match the pattern
+            }
+        }
+
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        proc_close($process);
+    }
 
     return;
 }
