@@ -1,4 +1,5 @@
 <?php
+
 // SQLite Viewer written in PHP and Tailwind CSS.
 // Usage: ./sqlite_viewer.php ./database/database.sqlite
 // Access in browser: http://localhost:8000
