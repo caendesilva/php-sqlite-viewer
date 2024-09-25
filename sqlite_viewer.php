@@ -111,6 +111,17 @@ function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null,
     return $data;
 }
 
+function getEntireTableData($db, $table)
+{
+    $query = "SELECT * FROM '$table'";
+    $result = $db->query($query);
+    $data = [];
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $data[] = $row;
+    }
+    return $data;
+}
+
 function getTableColumns($db, $table)
 {
     $result = $db->query("PRAGMA table_info('$table')");
@@ -163,6 +174,15 @@ $recordId = $_GET['id'] ?? null;
 $sortColumn = $_GET['sort'] ?? null;
 $sortOrder = $_GET['order'] ?? null;
 
+// Handle JSON download
+if ($action === 'download_json' && $currentTable) {
+    $tableData = getEntireTableData($db, $currentTable);
+    header('Content-Type: application/json');
+    header('Content-Disposition: attachment; filename="' . $currentTable . '.json"');
+    echo json_encode($tableData, JSON_PRETTY_PRINT);
+    exit;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -191,7 +211,12 @@ $sortOrder = $_GET['order'] ?? null;
     <!-- Main content -->
     <div class="flex-1 p-8 overflow-auto">
         <?php if ($currentTable): ?>
-            <h2 class="text-3xl font-bold mb-4"><?= htmlspecialchars($currentTable) ?></h2>
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-3xl font-bold"><?= htmlspecialchars($currentTable) ?></h2>
+                <a href="?table=<?= urlencode($currentTable) ?>&action=download_json" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                    Download JSON
+                </a>
+            </div>
 
             <?php if ($action === 'list'): ?>
                 <?php
