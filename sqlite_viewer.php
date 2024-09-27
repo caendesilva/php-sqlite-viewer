@@ -120,7 +120,7 @@ if (php_sapi_name() === 'cli') {
         // Read output in real-time
         while ($line = fgets($pipes[2])) {
             // Filter out unwanted log lines
-            if (! preg_match('/^\[.*\] \[::1\]:\d+ Accepted|Closing/', $line)) {
+            if (! preg_match('/^\[.*] \[::1]:\d+ Accepted|Closing/', $line)) {
                 echo $line; // Output the line if it doesn't match the pattern
             }
         }
