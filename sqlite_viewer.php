@@ -146,7 +146,7 @@ if (! file_exists($dbPath)) {
 
 $db = new SQLite3($dbPath);
 
-function getTables($db): array
+function getTables(SQLite3 $db): array
 {
     $tables = [];
     $result = $db->query("SELECT name FROM sqlite_master WHERE type='table'");
@@ -157,7 +157,7 @@ function getTables($db): array
     return $tables;
 }
 
-function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null, $sortOrder = null): array
+function getTableData(SQLite3 $db, string $table, int $page = 1, int $perPage = 20, string $sortColumn = null, string $sortOrder = null): array
 {
     $offset = ($page - 1) * $perPage;
     $query = "SELECT *, rowid FROM '$table'";
@@ -174,7 +174,7 @@ function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null,
     return $data;
 }
 
-function getEntireTableData($db, $table): array
+function getEntireTableData(SQLite3 $db, string $table): array
 {
     $query = "SELECT * FROM '$table'";
     $result = $db->query($query);
@@ -186,7 +186,7 @@ function getEntireTableData($db, $table): array
     return $data;
 }
 
-function getTableColumns($db, $table): array
+function getTableColumns(SQLite3 $db, string $table): array
 {
     $result = $db->query("PRAGMA table_info('$table')");
     $columns = [];
@@ -197,14 +197,17 @@ function getTableColumns($db, $table): array
     return $columns;
 }
 
-function getRecordDetails($db, $table, $id)
+function getRecordDetails(SQLite3 $db, string $table, int $id): array
 {
     $result = $db->query("SELECT *, rowid FROM '$table' WHERE rowid = $id");
 
     return $result->fetchArray(SQLITE3_ASSOC);
 }
 
-function getPrimaryKeyColumn($db, $table)
+/**
+ * @return string|null
+ */
+function getPrimaryKeyColumn(SQLite3 $db, string $table)
 {
     $result = $db->query("PRAGMA table_info('$table')");
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
@@ -216,9 +219,16 @@ function getPrimaryKeyColumn($db, $table)
     return null;
 }
 
+/**
+ * @param mixed $value
+ */
 function format_database_value($value): string
 {
-    if (is_null($value)) {
+    if (is_bool($value)) {
+        return $value ? 'true' : 'false';
+    } elseif (is_numeric($value)) {
+        return $value;
+    } else if (is_null($value)) {
         return '<span class="text-gray-400">NULL</span>';
     } elseif ($value === '') {
         return '<span class="text-gray-400">Empty string</span>';
