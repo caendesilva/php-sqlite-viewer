@@ -332,7 +332,7 @@ if ($action === 'download_json' && $currentTable) {
                                 <tr class="border-b border-gray-200 hover:bg-[#eaecef] transition-colors duration-50">
                                     <?php foreach ($columns as $column) { ?>
                                         <td class="py-3 px-6 text-left">
-                                            <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: 32ch;">
+                                            <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: <?= $column === 'id' ? 3 : 32 ?>ch;">
                                                 <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
                                             </div>
                                         </td>
