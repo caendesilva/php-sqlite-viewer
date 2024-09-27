@@ -89,7 +89,7 @@ if (! file_exists($dbPath)) {
 
 $db = new SQLite3($dbPath);
 
-function getTables($db)
+function getTables($db): array
 {
     $tables = [];
     $result = $db->query("SELECT name FROM sqlite_master WHERE type='table'");
@@ -100,7 +100,7 @@ function getTables($db)
     return $tables;
 }
 
-function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null, $sortOrder = null)
+function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null, $sortOrder = null): array
 {
     $offset = ($page - 1) * $perPage;
     $query = "SELECT *, rowid FROM '$table'";
@@ -117,7 +117,7 @@ function getTableData($db, $table, $page = 1, $perPage = 20, $sortColumn = null,
     return $data;
 }
 
-function getEntireTableData($db, $table)
+function getEntireTableData($db, $table): array
 {
     $query = "SELECT * FROM '$table'";
     $result = $db->query($query);
@@ -128,7 +128,7 @@ function getEntireTableData($db, $table)
     return $data;
 }
 
-function getTableColumns($db, $table)
+function getTableColumns($db, $table): array
 {
     $result = $db->query("PRAGMA table_info('$table')");
     $columns = [];
@@ -158,7 +158,7 @@ function getPrimaryKeyColumn($db, $table)
     return null;
 }
 
-function format_database_value($value)
+function format_database_value($value): string
 {
     if (is_null($value)) {
         return '<span class="text-gray-400">NULL</span>';
