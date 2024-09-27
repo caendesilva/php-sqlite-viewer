@@ -13,7 +13,7 @@ if (file_exists(__DIR__.'/dev-lib.php')) {
     require __DIR__.'/dev-lib.php';
 }
 
-// Supports environment of the same name or --port option
+// Supports environment of the same name or --port <int> option
 const SQLITE_VIEWER_DEFAULT_PORT = 9000;
 
 // If running in console, start a web server
