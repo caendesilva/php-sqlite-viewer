@@ -100,17 +100,11 @@ if (php_sapi_name() === 'cli') {
                         return 'Windows';
                     }
 
-                    $map = [
-                        'Darwin' => 'Darwin',
-                        'DragonFly' => 'BSD',
-                        'FreeBSD' => 'BSD',
-                        'NetBSD' => 'BSD',
-                        'OpenBSD' => 'BSD',
-                        'Linux' => 'Linux',
-                        'SunOS' => 'Solaris',
-                    ];
+                    if (strpos(PHP_OS, 'Darwin') !== false) {
+                        return 'Darwin';
+                    }
 
-                    return $map[PHP_OS] ?? 'Unknown';
+                    return 'Linux'; // Probably Linux
                 })());
             }
 
