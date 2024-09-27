@@ -333,7 +333,15 @@ if ($action === 'download_json' && $currentTable) {
                                     <?php foreach ($columns as $key => $column): ?>
                                         <td class="py-2 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left">
                                             <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: <?= $column === 'id' ? 3 : 32 ?>ch;">
-                                                <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
+                                                <?php
+                                                $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
+                                                if ($idForView !== null && $column === $primaryKey): ?>
+                                                    <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="text-blue-600 hover:text-blue-900">
+                                                        <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
+                                                    </a>
+                                                <?php else: ?>
+                                                    <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     <?php endforeach; ?>
