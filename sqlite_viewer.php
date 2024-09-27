@@ -272,19 +272,19 @@ if ($action === 'download_json' && $currentTable) {
     <div class="w-64 bg-gray-800 text-white p-4">
         <h1 class="text-2xl font-bold mb-4">SQLite Viewer</h1>
         <ul>
-            <?php foreach ($tables as $table) { ?>
+            <?php foreach ($tables as $table): ?>
                 <li class="mb-2">
                     <a href="?table=<?= urlencode($table) ?>" class="hover:text-gray-300">
                         <?= htmlspecialchars($table) ?>
                     </a>
                 </li>
-            <?php } ?>
+            <?php endforeach; ?>
         </ul>
     </div>
 
     <!-- Main content -->
     <div class="flex-1 p-8 overflow-auto">
-        <?php if ($currentTable) { ?>
+        <?php if ($currentTable): ?>
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-3xl font-bold"><?= htmlspecialchars($currentTable) ?></h2>
                 <a href="?table=<?= urlencode($currentTable) ?>&action=download_json" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
@@ -292,7 +292,7 @@ if ($action === 'download_json' && $currentTable) {
                 </a>
             </div>
 
-            <?php if ($action === 'list') { ?>
+            <?php if ($action === 'list'): ?>
                 <?php
                 $data = getTableData($db, $currentTable, $page, $perPage, $sortColumn, $sortOrder);
                 $columns = getTableColumns($db, $currentTable);
@@ -303,7 +303,7 @@ if ($action === 'download_json' && $currentTable) {
                         <table class="min-w-full">
                             <thead>
                             <tr class="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
-                                <?php foreach ($columns as $key => $column) { ?>
+                                <?php foreach ($columns as $key => $column): ?>
                                     <?php
                                     $newSortOrder = 'ASC';
                                     $sortIndicator = '';
@@ -323,32 +323,31 @@ if ($action === 'download_json' && $currentTable) {
                                             <?= htmlspecialchars($column) ?> <?= $sortIndicator ?>
                                         </a>
                                     </th>
-                                <?php } ?>
+                                <?php endforeach; ?>
                                 <th class="py-3 px-3 pr-4 text-left">Actions</th>
                             </tr>
                             </thead>
                             <tbody class="text-gray-600 text-sm font-light">
-                            <?php foreach ($data as $row) { ?>
+                            <?php foreach ($data as $row): ?>
                                 <tr class="border-b border-gray-200 hover:bg-[#eaecef] transition-colors duration-50">
-                                    <?php foreach ($columns as $key => $column) { ?>
+                                    <?php foreach ($columns as $key => $column): ?>
                                         <td class="py-2 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left">
                                             <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: <?= $column === 'id' ? 3 : 32 ?>ch;">
                                                 <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
                                             </div>
                                         </td>
-                                    <?php } ?>
+                                    <?php endforeach; ?>
                                     <td class="py-2 px-3 pr-4 text-right whitespace-nowrap">
                                         <?php
                                         $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
-                                        if ($idForView !== null) {
-                                            ?>
+                                        if ($idForView !== null): ?>
                                             <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="text-blue-600 hover:text-blue-900">View</a>
-                                        <?php } else { ?>
+                                        <?php else: ?>
                                             <span class="text-gray-400">No ID</span>
-                                        <?php } ?>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
-                            <?php } ?>
+                            <?php endforeach; ?>
                             </tbody>
                         </table>
                     </div>
@@ -356,33 +355,33 @@ if ($action === 'download_json' && $currentTable) {
 
                 <!-- Pagination -->
                 <div class="mt-4 flex justify-between items-center">
-                    <?php if ($page > 1) { ?>
+                    <?php if ($page > 1): ?>
                         <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page - 1 ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Previous</a>
-                    <?php } ?>
-                    <?php if (count($data) == $perPage) { ?>
+                    <?php endif; ?>
+                    <?php if (count($data) == $perPage): ?>
                         <a href="?table=<?= urlencode($currentTable) ?>&page=<?= $page + 1 ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Next</a>
-                    <?php } ?>
+                    <?php endif; ?>
                 </div>
 
-            <?php } elseif ($action === 'view' && $recordId) { ?>
+            <?php elseif ($action === 'view' && $recordId): ?>
                 <?php
                 $record = getRecordDetails($db, $currentTable, $recordId);
                 ?>
                 <h3 class="text-xl font-bold mb-4">Record Details</h3>
                 <div class="bg-white shadow-md rounded-lg overflow-hidden">
-                    <?php foreach ($record as $column => $value) { ?>
+                    <?php foreach ($record as $column => $value): ?>
                         <div class="py-3 px-6 border-b border-gray-200">
                             <strong><?= htmlspecialchars($column) ?>:</strong>
                             <?= format_database_value($value) ?>
                         </div>
-                    <?php } ?>
+                    <?php endforeach; ?>
                 </div>
                 <a href="?table=<?= urlencode($currentTable) ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Table</a>
-            <?php } ?>
+            <?php endif; ?>
 
-        <?php } else { ?>
+        <?php else: ?>
             <p class="text-xl">Select a table from the sidebar to view its contents.</p>
-        <?php } ?>
+        <?php endif; ?>
     </div>
 </div>
 </body>
