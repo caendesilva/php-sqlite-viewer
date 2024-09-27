@@ -295,7 +295,21 @@ if ($action === 'download_json' && $currentTable) {
 
     <!-- Main content -->
     <div class="flex-1 p-8 overflow-auto">
-        <?php if ($currentTable): ?>
+        <?php
+        function findColumnWidth(string $column): int
+        {
+            if ($column === 'id') {
+                return 3;
+            }
+
+            if ($column === 'password') {
+                return 16;
+            }
+
+            return 32;
+        }
+
+        if ($currentTable): ?>
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-3xl font-bold"><?= htmlspecialchars($currentTable) ?></h2>
                 <div>
@@ -395,7 +409,7 @@ if ($action === 'download_json' && $currentTable) {
                                 <tr class="border-b border-gray-200 hover:bg-[#eaecef] transition-colors duration-50">
                                     <?php foreach ($columns as $key => $column): ?>
                                         <td class="py-2 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left">
-                                            <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: <?= $column === 'id' ? 3 : 32 ?>ch;">
+                                            <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: <?= findColumnWidth($column); ?>ch;">
                                                 <?php
                                                 $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
                                                 if ($idForView !== null && $column === $primaryKey): ?>
