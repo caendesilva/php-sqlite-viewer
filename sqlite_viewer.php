@@ -340,8 +340,8 @@ if ($action === 'download_json' && $currentTable) {
                                     <td class="py-2 px-3 pr-4 text-right whitespace-nowrap">
                                         <?php
                                         $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
-                                if ($idForView !== null) {
-                                    ?>
+                                        if ($idForView !== null) {
+                                            ?>
                                             <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="text-blue-600 hover:text-blue-900">View</a>
                                         <?php } else { ?>
                                             <span class="text-gray-400">No ID</span>
