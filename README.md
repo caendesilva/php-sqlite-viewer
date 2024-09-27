@@ -13,8 +13,14 @@ A lightweight, single-file PHP SQLite database viewer with no dependencies. Run 
 ### Features
 
 - 📁 **Single File**: No dependencies; everything is contained in a single PHP file.
-- 🖥️ **Cross-Platform**: Compatible with both modern and legacy systems, allowing it to run on various operating systems.
-- ✅ **No Installation Required**: Can be run directly without installation, making it convenient for quick access to SQLite databases.
+- 🖥️ **Cross-Platform**: Runs on Windows, macOS, and Linux.
+- 🏛️ **Run Anywhere** - Compatible with legacy and modern systems and PHP versions.
+- ✅ **No Installation Required**: Nothing to install; just run the script.
+- 🌐 **Web Interface**: View your SQLite database in your browser.
+- 🛡️ **Secure**: Runs locally and offline. Data stays on your machine.
+- 🔒 **Safe**: Database is readonly and never modified.
+- 🚀 **Fast**: Lightweight and optimized for speed.
+
 
 ## Usage
 
