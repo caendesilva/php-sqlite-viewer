@@ -13,6 +13,8 @@ if (file_exists(__DIR__.'/dev-lib.php')) {
     require __DIR__.'/dev-lib.php';
 }
 
+const SQLITE_VIEWER_DEFAULT_PORT = 9000;
+
 // If running in console, start a web server
 if (php_sapi_name() === 'cli') {
     if (empty($argv[1])) {
@@ -34,18 +36,21 @@ if (php_sapi_name() === 'cli') {
 
     putenv('SQLITE_VIEWER_DATABASE='.$argv[1]);
 
-    // Check if a port is set in env
-    $port = getenv('SQLITE_VIEWER_PORT') ?: null;
+    // Check if --port option is set else use a random port
+    $portOption = array_search('--port', $argv);
 
-    if (! $port) {
-        // Check if --port option is set else use a random port
-        $portOption = array_search('--port', $argv);
+    if ($portOption !== false && isset($argv[$portOption + 1])) {
+        // Custom port is set
+        $portSelection = $argv[$portOption + 1];
 
-        if ($portOption !== false && isset($argv[$portOption + 1])) {
-            $port = $argv[$portOption + 1];
-        } else {
+        if ($portSelection === 'random') {
             $port = rand(49152, 65535);
+        } else {
+            $port = $portSelection;
         }
+    } else {
+        // Use env variable or default port
+        $port = getenv('SQLITE_VIEWER_PORT') ?: SQLITE_VIEWER_DEFAULT_PORT;
     }
 
     $process = proc_open("php -S localhost:$port ".__FILE__, $descriptor_spec, $pipes);
