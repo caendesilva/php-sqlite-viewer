@@ -32,7 +32,7 @@ if (php_sapi_name() === 'cli') {
         2 => ['pipe', 'w'],   // stderr
     ];
 
-    putenv('SQLITE_DB_PATH='.$argv[1]);
+    putenv('SQLITE_VIEWER_DATABASE='.$argv[1]);
 
     // Check if a port is set in env
     $port = getenv('SQLITE_VIEWER_PORT') ?: null;
@@ -71,10 +71,10 @@ if (php_sapi_name() === 'cli') {
 }
 
 // Read database path from environment variable or command line argument
-$dbPath = getenv('SQLITE_DB_PATH') ?: ($argv[1] ?? null);
+$dbPath = getenv('SQLITE_VIEWER_DATABASE') ?: ($argv[1] ?? null);
 
 if (! $dbPath) {
-    exit('Please provide a database path via SQLITE_DB_PATH environment variable or as a command line argument.');
+    exit('Please provide a database path via SQLITE_VIEWER_DATABASE environment variable or as a command line argument.');
 }
 
 if (! file_exists($dbPath)) {
