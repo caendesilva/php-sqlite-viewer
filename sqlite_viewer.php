@@ -202,6 +202,22 @@ function getTableStructure(SQLite3 $db, string $table): array
     $result = $db->query("PRAGMA table_info('$table')");
     $structure = [];
     while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        // Parse the type to extract additional information
+        preg_match('/(\w+)(?:\((\d+)(?:,(\d+))?\))?/', $row['type'], $matches);
+        $baseType = $matches[1] ?? $row['type'];
+        $size = $matches[2] ?? null;
+        $scale = $matches[3] ?? null;
+
+        $detailedType = $baseType;
+        if ($size !== null) {
+            $detailedType .= "($size";
+            if ($scale !== null) {
+                $detailedType .= ",$scale";
+            }
+            $detailedType .= ")";
+        }
+
+        $row['detailed_type'] = $detailedType;
         $structure[] = $row;
     }
     return $structure;
@@ -335,6 +351,7 @@ if ($action === 'download_json' && $currentTable) {
                                     <th class="py-3 px-6 text-left">Type</th>
                                     <th class="py-3 px-6 text-center">Nullable</th>
                                     <th class="py-3 px-6 text-center">Primary Key?</th>
+                                    <th class="py-3 px-6 text-left">Default Value</th>
                                 </tr>
                                 </thead>
                                 <tbody class="text-gray-700 text-sm font-light">
@@ -347,13 +364,16 @@ if ($action === 'download_json' && $currentTable) {
                                             <?= htmlspecialchars($column['name']) ?>
                                         </td>
                                         <td class="py-3 px-6 text-left">
-                                            <?= htmlspecialchars($column['type']) ?>
+                                            <?= htmlspecialchars($column['detailed_type']) ?>
                                         </td>
                                         <td class="py-3 px-6 text-center">
                                             <?= $column['notnull'] ? 'No' : 'Yes' ?>
                                         </td>
                                         <td class="py-3 px-6 text-center">
                                             <?= $column['pk'] ? 'Yes' : 'No' ?>
+                                        </td>
+                                        <td class="py-3 px-6 text-left">
+                                            <?= $column['dflt_value'] !== null ? htmlspecialchars($column['dflt_value']) : '<span class="text-gray-400">NULL</span>' ?>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>
