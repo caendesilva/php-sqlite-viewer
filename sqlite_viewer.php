@@ -228,7 +228,7 @@ function format_database_value($value): string
         return $value ? 'true' : 'false';
     } elseif (is_numeric($value)) {
         return $value;
-    } else if (is_null($value)) {
+    } elseif (is_null($value)) {
         return '<span class="text-gray-400">NULL</span>';
     } elseif ($value === '') {
         return '<span class="text-gray-400">Empty string</span>';
