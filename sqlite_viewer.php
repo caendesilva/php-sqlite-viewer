@@ -302,7 +302,7 @@ if ($action === 'download_json' && $currentTable) {
                     <div class="inline-block min-w-full shadow-md rounded-lg overflow-hidden">
                         <table class="min-w-full">
                             <thead>
-                            <tr class="bg-gray-200 text-gray-600 uppercase text-sm leading-normal">
+                            <tr class="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
                                 <?php foreach ($columns as $column) { ?>
                                     <?php
                                     $newSortOrder = 'ASC';
@@ -318,26 +318,26 @@ if ($action === 'download_json' && $currentTable) {
                                     }
                                     $sortParams = $newSortOrder ? "&sort=$column&order=$newSortOrder" : '';
                                     ?>
-                                    <th class="py-3 px-6 text-left whitespace-nowrap">
+                                    <th class="py-2 px-3 text-left whitespace-nowrap">
                                         <a href="?table=<?= urlencode($currentTable) ?><?= $sortParams ?>&page=<?= $page ?>" class="hover:text-gray-900">
                                             <?= htmlspecialchars($column) ?> <?= $sortIndicator ?>
                                         </a>
                                     </th>
                                 <?php } ?>
-                                <th class="py-3 px-6 text-left">Actions</th>
+                                <th class="py-2 px-3 text-left">Actions</th>
                             </tr>
                             </thead>
                             <tbody class="text-gray-600 text-sm font-light">
                             <?php foreach ($data as $row) { ?>
                                 <tr class="border-b border-gray-200 hover:bg-[#eaecef] transition-colors duration-50">
                                     <?php foreach ($columns as $column) { ?>
-                                        <td class="py-3 px-6 text-left">
+                                        <td class="py-2 px-3 text-left">
                                             <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: <?= $column === 'id' ? 3 : 32 ?>ch;">
                                                 <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
                                             </div>
                                         </td>
                                     <?php } ?>
-                                    <td class="py-3 px-6 text-left whitespace-nowrap">
+                                    <td class="py-2 px-3 text-left whitespace-nowrap">
                                         <?php
                                         $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
                                 if ($idForView !== null) {
