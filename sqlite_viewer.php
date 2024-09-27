@@ -23,6 +23,16 @@ if (file_exists(__DIR__.'/dev-lib.php')) {
  */
 const SQLITE_VIEWER_DEFAULT_PORT = 9000;
 
+/**
+ * Default setting for if the page should be opened automatically in the browser.
+ *
+ * Customize using one of these:
+ *
+ * @environmentVariable SQLITE_VIEWER_DEFAULT_OPEN_PAGE
+ * @commandLineOption --open <bool>
+ */
+const SQLITE_VIEWER_DEFAULT_OPEN = true;
+
 // If running in console, start a web server
 if (php_sapi_name() === 'cli') {
     if (empty($argv[1])) {
@@ -61,11 +71,55 @@ if (php_sapi_name() === 'cli') {
         $port = getenv('SQLITE_VIEWER_PORT') ?: SQLITE_VIEWER_DEFAULT_PORT;
     }
 
+    // Check if --open option is set
+    $openOption = array_search('--open', $argv);
+
+    if ($openOption !== false && isset($argv[$openOption + 1])) {
+        $openSelection = $argv[$openOption + 1];
+        $open = filter_var($openSelection, FILTER_VALIDATE_BOOLEAN);
+    } else {
+        $open = getenv('SQLITE_VIEWER_DEFAULT_OPEN') ?: SQLITE_VIEWER_DEFAULT_OPEN;
+    }
+
     $process = proc_open("php -S localhost:$port ".__FILE__, $descriptor_spec, $pipes);
 
     if (is_resource($process)) {
         // Close stdin as we don't need to send input
         fclose($pipes[0]);
+
+        // Open the page in the browser
+        if ($open) {
+            $url = "http://localhost:$port";
+
+            if (! defined('PHP_OS_FAMILY')) {
+                // Symfony polyfill pre PHP 7.2
+                define('PHP_OS_FAMILY', (function() {
+                    if ('\\' === DIRECTORY_SEPARATOR) {
+                        return 'Windows';
+                    }
+
+                    $map = array(
+                        'Darwin' => 'Darwin',
+                        'DragonFly' => 'BSD',
+                        'FreeBSD' => 'BSD',
+                        'NetBSD' => 'BSD',
+                        'OpenBSD' => 'BSD',
+                        'Linux' => 'Linux',
+                        'SunOS' => 'Solaris',
+                    );
+
+                    return $map[PHP_OS] ?? 'Unknown';
+                })());
+            }
+
+            if (PHP_OS_FAMILY === 'Darwin') {
+                exec("open $url");
+            } elseif (PHP_OS_FAMILY === 'Windows') {
+                exec("start $url");
+            } elseif (PHP_OS_FAMILY === 'Linux') {
+                exec("xdg-open $url");
+            }
+        }
 
         // Read output in real-time
         while ($line = fgets($pipes[2])) {
