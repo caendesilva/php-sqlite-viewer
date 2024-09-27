@@ -318,13 +318,13 @@ if ($action === 'download_json' && $currentTable) {
                                     }
                                     $sortParams = $newSortOrder ? "&sort=$column&order=$newSortOrder" : '';
                                     ?>
-                                    <th class="py-2 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left whitespace-nowrap">
+                                    <th class="py-3 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left whitespace-nowrap">
                                         <a href="?table=<?= urlencode($currentTable) ?><?= $sortParams ?>&page=<?= $page ?>" class="hover:text-gray-900">
                                             <?= htmlspecialchars($column) ?> <?= $sortIndicator ?>
                                         </a>
                                     </th>
                                 <?php } ?>
-                                <th class="py-2 px-3 pr-4 text-left">Actions</th>
+                                <th class="py-3 px-3 pr-4 text-left">Actions</th>
                             </tr>
                             </thead>
                             <tbody class="text-gray-600 text-sm font-light">
