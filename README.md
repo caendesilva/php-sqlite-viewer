@@ -4,17 +4,17 @@
 ![PHP Version](https://img.shields.io/static/v1?label=Min%20PHP%20Version&message=7.0&color=blue&style=flat-square)
 ![File Size](https://img.shields.io/github/size/caendesilva/php-sqlite-viewer/sqlite_viewer.php?style=flat-square)
 
-**Warning: This project is highly experimental and in early initial development.**
+⚠️ Highly Experimental - Early Initial Development ⚠️
 
 ## Overview
 
-The **PHP SQLite Viewer** is a simple, lightweight tool written in PHP for viewing SQLite databases. It is designed to be executed from the command line and run a local web server for browsing database contents.
+A lightweight, single-file PHP SQLite database viewer with no dependencies. Run from the command line and view in your browser.
 
 ### Features
 
-- **Single File**: No dependencies; everything is contained in a single PHP file.
-- **Cross-Platform**: Compatible with both modern and legacy systems, allowing it to run on various operating systems.
-- **No Installation Required**: Can be run directly without installation, making it convenient for quick access to SQLite databases.
+- 📁 **Single File**: No dependencies; everything is contained in a single PHP file.
+- 🖥️ **Cross-Platform**: Compatible with both modern and legacy systems, allowing it to run on various operating systems.
+- ✅ **No Installation Required**: Can be run directly without installation, making it convenient for quick access to SQLite databases.
 
 ## Usage
 
@@ -64,6 +64,7 @@ You can customize the default behavior using environment variables or command li
 ## Requirements
 
 - PHP 7.0 or higher
+- SQLite3 extension enabled
 
 ## Contributing
 
@@ -71,8 +72,8 @@ Contributions are welcome! Feel free to submit issues or pull requests.
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License.
 
 ## Acknowledgments
 
-This project is built on PHP and leverages the SQLite3 extension for database access.
+This project is built on PHP and uses the SQLite3 extension for database access.
