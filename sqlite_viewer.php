@@ -287,7 +287,7 @@ if ($action === 'download_json' && $currentTable) {
         <?php if ($currentTable): ?>
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-3xl font-bold"><?= htmlspecialchars($currentTable) ?></h2>
-                <a href="?table=<?= urlencode($currentTable) ?>&action=download_json" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                <a href="?table=<?= urlencode($currentTable) ?>&action=download_json" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-1 px-2 text-sm rounded">
                     Download JSON
                 </a>
             </div>
