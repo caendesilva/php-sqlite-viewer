@@ -214,12 +214,13 @@ function getTableStructure(SQLite3 $db, string $table): array
             if ($scale !== null) {
                 $detailedType .= ",$scale";
             }
-            $detailedType .= ")";
+            $detailedType .= ')';
         }
 
         $row['detailed_type'] = $detailedType;
         $structure[] = $row;
     }
+
     return $structure;
 }
 
