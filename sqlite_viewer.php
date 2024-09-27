@@ -337,7 +337,7 @@ if ($action === 'download_json' && $currentTable) {
                                             </div>
                                         </td>
                                     <?php } ?>
-                                    <td class="py-2 px-3 pr-4 text-left whitespace-nowrap">
+                                    <td class="py-2 px-3 pr-4 text-right whitespace-nowrap">
                                         <?php
                                         $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
                                 if ($idForView !== null) {
