@@ -197,6 +197,16 @@ function getTableColumns(SQLite3 $db, string $table): array
     return $columns;
 }
 
+function getTableStructure(SQLite3 $db, string $table): array
+{
+    $result = $db->query("PRAGMA table_info('$table')");
+    $structure = [];
+    while ($row = $result->fetchArray(SQLITE3_ASSOC)) {
+        $structure[] = $row;
+    }
+    return $structure;
+}
+
 function getRecordDetails(SQLite3 $db, string $table, int $id): array
 {
     $result = $db->query("SELECT *, rowid FROM '$table' WHERE rowid = $id");
@@ -267,7 +277,7 @@ if ($action === 'download_json' && $currentTable) {
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100">
-<div class="flex h-screen">
+<div class="flex h-screen" x-data="{ showStructure: false }">
     <!-- Sidebar -->
     <div class="w-64 bg-gray-800 text-white p-4">
         <h1 class="text-2xl font-bold mb-4">SQLite Viewer</h1>
@@ -287,9 +297,61 @@ if ($action === 'download_json' && $currentTable) {
         <?php if ($currentTable): ?>
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-3xl font-bold"><?= htmlspecialchars($currentTable) ?></h2>
-                <a href="?table=<?= urlencode($currentTable) ?>&action=download_json" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-1 px-2 text-sm rounded">
-                    Download JSON
-                </a>
+                <div>
+                    <button @click="showStructure = true" class="mr-2 bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 text-sm rounded">
+                        View Structure
+                    </button>
+                    <a href="?table=<?= urlencode($currentTable) ?>&action=download_json" class="bg-indigo-500 hover:bg-indigo-700 text-white font-bold py-1 px-2 text-sm rounded">
+                        Download JSON
+                    </a>
+                </div>
+            </div>
+
+            <!-- Structure Modal -->
+            <div x-show="showStructure" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full" x-cloak>
+                <div class="relative top-20 mx-auto p-5 border min-w-96 w-fit shadow-lg rounded-md bg-white">
+                    <div class="mt-3 text-center">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">Table Structure</h3>
+                        <div class="mt-2 px-7 py-3">
+                            <table class="min-w-full">
+                                <thead>
+                                <tr class="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
+                                    <th class="py-3 px-6 text-left">Column</th>
+                                    <th class="py-3 px-6 text-left">Type</th>
+                                    <th class="py-3 px-6 text-center">Nullable</th>
+                                    <th class="py-3 px-6 text-center">PK</th>
+                                </tr>
+                                </thead>
+                                <tbody class="text-gray-600 text-sm font-light">
+                                <?php
+                                $structure = getTableStructure($db, $currentTable);
+                                foreach ($structure as $column):
+                                    ?>
+                                    <tr class="border-b border-gray-200 hover:bg-gray-100">
+                                        <td class="py-3 px-6 text-left whitespace-nowrap">
+                                            <?= htmlspecialchars($column['name']) ?>
+                                        </td>
+                                        <td class="py-3 px-6 text-left">
+                                            <?= htmlspecialchars($column['type']) ?>
+                                        </td>
+                                        <td class="py-3 px-6 text-center">
+                                            <?= $column['notnull'] ? 'No' : 'Yes' ?>
+                                        </td>
+                                        <td class="py-3 px-6 text-center">
+                                            <?= $column['pk'] ? 'Yes' : 'No' ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="items-center px-4 py-3">
+                            <button @click="showStructure = false" class="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-300">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <?php if ($action === 'list'): ?>
@@ -392,5 +454,6 @@ if ($action === 'download_json' && $currentTable) {
         <?php endif; ?>
     </div>
 </div>
+<script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>

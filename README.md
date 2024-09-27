@@ -71,6 +71,8 @@ You can customize the default behavior using environment variables or command li
 
 - PHP 7.0 or higher
 - SQLite3 extension enabled
+- You need a browser that can run JavaScript for interactions like modals. If you're a developer, you probably have one.
+- For the time being you need an internet connection to load the Tailwind and Alpine. This will probably be bundled in the future if enough people use this.
 
 ## Contributing
 
