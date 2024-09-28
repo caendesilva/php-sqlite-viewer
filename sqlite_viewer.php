@@ -287,6 +287,21 @@ if ($action === 'download_json' && $currentTable) {
 $dbFullPath = realpath($dbPath) ?: $dbPath;
 $dbName = basename($dbPath);
 
+// Helpers
+
+function findColumnWidth(string $column): int
+{
+    if ($column === 'id') {
+        return 3;
+    }
+
+    if ($column === 'password') {
+        return 16;
+    }
+
+    return 32;
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -322,21 +337,6 @@ $dbName = basename($dbPath);
 
     <!-- Main content -->
     <main class="flex-1 p-8 overflow-auto">
-        <?php
-        function findColumnWidth(string $column): int
-        {
-            if ($column === 'id') {
-                return 3;
-            }
-
-            if ($column === 'password') {
-                return 16;
-            }
-
-            return 32;
-        }
-        ?>
-
         <?php if ($currentTable): ?>
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-3xl font-bold"><?= htmlspecialchars($currentTable) ?></h2>
