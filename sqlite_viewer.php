@@ -159,18 +159,26 @@ function getTables(SQLite3 $db): array
 
 function getTableInfo(SQLite3 $db, string $table): array
 {
+    // Get the row count
     $result = $db->query("SELECT COUNT(*) as count FROM '$table'");
     $count = $result->fetchArray(SQLITE3_ASSOC)['count'];
 
+    // Get the number of columns
     $result = $db->query("PRAGMA table_info('$table')");
     $columnCount = 0;
-    while ($result->fetchArray(SQLITE3_ASSOC)) {
+    $columns = [];
+    while ($column = $result->fetchArray(SQLITE3_ASSOC)) {
+        $columns[] = $column['name'];  // Store the column names for later use
         $columnCount++;
     }
 
-    // Get table size
-    $result = $db->query("SELECT SUM(length(hex(data))) as size FROM '$table'");
-    $size = $result->fetchArray(SQLITE3_ASSOC)['size'];
+    // Get the table size by summing the length of each column's data
+    $size = 0;
+    foreach ($columns as $column) {
+        $result = $db->query("SELECT SUM(length($column)) as size FROM '$table'");
+        $columnSize = $result->fetchArray(SQLITE3_ASSOC)['size'];
+        $size += $columnSize ?? 0;  // Add size, handle null in case of empty columns
+    }
 
     return [
         'name' => $table,
