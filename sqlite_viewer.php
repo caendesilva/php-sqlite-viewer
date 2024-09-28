@@ -325,8 +325,9 @@ if ($action === 'download_json' && $currentTable) {
 
             return 32;
         }
+        ?>
 
-        if ($currentTable): ?>
+        <?php if ($currentTable): ?>
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-3xl font-bold"><?= htmlspecialchars($currentTable) ?></h2>
                 <div class="flex space-x-2">
