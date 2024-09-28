@@ -623,8 +623,8 @@ function formatSize(int $bytes): string
         <?php endif; ?>
     </main>
 </div>
-<footer class="bg-gray-700 text-white p-4 text-sm">
-    <div class="container mx-auto flex justify-center items-center text-gray-300 gap-4">
+<footer class="bg-gray-800 text-white text-sm">
+    <div class="flex justify-center items-center text-gray-300 p-4 gap-4 bg-gray-700 ml-52">
         <small class="text-sm">
             <a href="https://github.com/caendesilva/php-sqlite-viewer" class="text-indigo-300 hover:text-indigo-400" target="_blank" rel="noopener noreferrer">PHP SQLite Viewer</a> <?= SQLITE_VIEWER_VERSION ?>
         </small>
