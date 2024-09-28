@@ -320,6 +320,8 @@ if ($action === 'download_json' && $currentTable) {
 $dbFullPath = realpath($dbPath) ?: $dbPath;
 $dbName = basename($dbPath);
 
+$dbPrettyFullPath = $_ENV['HOME'] ? str_replace($_ENV['HOME'], '~', $dbFullPath) : $dbFullPath;
+
 // Helpers
 
 function findColumnWidth(string $column): int
@@ -631,8 +633,8 @@ function formatSize(int $bytes): string
             <a href="https://github.com/caendesilva/php-sqlite-viewer" class="text-indigo-300 hover:text-indigo-400" target="_blank" rel="noopener noreferrer">PHP SQLite Viewer</a> <?= SQLITE_VIEWER_VERSION ?>
         </small>
 
-        <small class="text-sm">
-            Database: <?= htmlspecialchars($dbFullPath) ?>
+        <small class="text-sm" title="<?= htmlspecialchars($dbFullPath) ?>">
+            Database: <?= htmlspecialchars($dbPrettyFullPath) ?>
         </small>
     </div>
 </footer>
