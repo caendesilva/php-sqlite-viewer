@@ -304,8 +304,8 @@ $dbName = basename($dbPath);
         <h2 class="text-sm text-gray-400 mb-4"><?= htmlspecialchars($dbName) ?></h2>
         <ul>
             <?php foreach ($tables as $table): ?>
-                <li class="mb-1">
-                    <a href="?table=<?= urlencode($table) ?>" class="block py-1 px-2 rounded hover:bg-gray-700 transition-colors duration-150 <?= $currentTable === $table ? 'border-l-2 border-indigo-500 rounded-l-none -ml-[2px] hover:ml-0 hover:border-0 hover:rounded-l' : '' ?>">
+                <li class="mb-1 -ml-2">
+                    <a href="?table=<?= urlencode($table) ?>" class="block py-1.5 px-2 rounded hover:bg-gray-700 transition-colors duration-150 text-gray-300 leading-none <?= $currentTable === $table ? 'text-white border-l-2 border-indigo-500 rounded-l-none -ml-[2px]' : '' ?>">
                         <?= htmlspecialchars($table) ?>
                     </a>
                 </li>
