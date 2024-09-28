@@ -423,7 +423,7 @@ if ($action === 'download_json' && $currentTable) {
                                         </a>
                                     </th>
                                 <?php endforeach; ?>
-                                <th class="py-3 px-3 pr-4 text-left">Actions</th>
+                                <th class="py-3 px-3 pr-4 text-right">Actions</th>
                             </tr>
                             </thead>
                             <tbody class="text-gray-600 text-sm font-light">
