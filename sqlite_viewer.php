@@ -284,6 +284,8 @@ if ($action === 'download_json' && $currentTable) {
     exit;
 }
 
+$dbName = basename($dbPath);
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -298,11 +300,12 @@ if ($action === 'download_json' && $currentTable) {
 <div class="flex h-screen" x-data="{ showStructure: false }" @keydown.escape="showStructure = false">
     <!-- Sidebar -->
     <aside class="w-64 bg-gray-800 text-white p-4">
-        <h1 class="text-2xl font-bold mb-4">SQLite Viewer</h1>
+        <h1 class="text-2xl font-bold mb-2">SQLite Viewer</h1>
+        <h2 class="text-sm text-gray-400 mb-4"><?= htmlspecialchars($dbName) ?></h2>
         <ul>
             <?php foreach ($tables as $table): ?>
-                <li class="mb-2">
-                    <a href="?table=<?= urlencode($table) ?>" class="hover:text-gray-300">
+                <li class="mb-1">
+                    <a href="?table=<?= urlencode($table) ?>" class="block py-1 px-2 rounded hover:bg-gray-700 transition-colors duration-150 <?= $currentTable === $table ? 'border-l-2 border-indigo-500 rounded-l-none -ml-[2px] hover:ml-0 hover:border-0 hover:rounded-l' : '' ?>">
                         <?= htmlspecialchars($table) ?>
                     </a>
                 </li>
