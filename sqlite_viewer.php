@@ -311,7 +311,7 @@ $dbName = basename($dbPath);
             <ul>
                 <?php foreach ($tables as $table): ?>
                     <li class="mb-1 -ml-2 text-sm">
-                        <a href="?table=<?= urlencode($table) ?>" class="block py-1.5 px-2 rounded hover:bg-gray-700 transition-colors duration-150 text-gray-300 leading-none <?= $currentTable === $table ? 'text-white border-l-2 border-indigo-500 rounded-l-none -ml-[2px]' : '' ?>">
+                        <a href="?table=<?= urlencode($table) ?>" class="block py-1.5 px-2 rounded hover:bg-gray-700 transition-colors duration-150 text-gray-300 leading-none <?= $currentTable === $table ? 'text-white border-l-2 border-indigo-500 rounded-l-none -ml-[2px] cursor-default' : '' ?>">
                             <?= htmlspecialchars($table) ?>
                         </a>
                     </li>
