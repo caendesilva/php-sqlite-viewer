@@ -302,6 +302,35 @@ function findColumnWidth(string $column): int
     return 32;
 }
 
+/** @experimental */
+function findPrettyDbName(): string
+{
+    global $dbFullPath;
+
+    $startsWith = static function ($haystack, $needle) {
+        $cutsQuantity = 2;
+        $parts = explode($needle, $haystack, $cutsQuantity);
+        return ($parts[0] === '');
+    };
+
+    $endsWith = static function ($haystack, $needle) {
+        $parts = explode($needle, $haystack);
+        return (array_pop($parts) === '');
+    };
+
+    // if ! ends with database.sqlite, it's probably a pretty name
+    if (! $endsWith($dbFullPath, 'database.sqlite')) {
+        return basename($dbFullPath, '.sqlite');
+    }
+
+    // if ends with database/database.sqlite, the dirname before that might be the project directory
+    if ($endsWith(dirname($dbFullPath), 'database')) {
+        return basename(dirname($dbFullPath, 2));
+    }
+
+    return basename($dbFullPath);
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -317,7 +346,7 @@ function findColumnWidth(string $column): int
     <!-- Sidebar -->
     <aside class="w-52 bg-gray-800 text-white p-4">
         <h1 class="text-2xl font-bold mb-2">SQLite Viewer</h1>
-        <h2 class="text-sm text-gray-400 mb-4" title="<?= htmlspecialchars($dbFullPath) ?>"><?= htmlspecialchars($dbName) ?></h2>
+        <h2 class="text-sm text-gray-400 mb-4" title="<?= htmlspecialchars($dbFullPath) ?>"><?= htmlspecialchars(findPrettyDbName()) ?></h2>
         <div>
             <hr class="border-t border-gray-700 my-4">
         </div>
