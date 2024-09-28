@@ -297,7 +297,7 @@ if ($action === 'download_json' && $currentTable) {
 <body class="bg-gray-100">
 <div class="flex h-screen" x-data="{ showStructure: false }" @keydown.escape="showStructure = false">
     <!-- Sidebar -->
-    <div class="w-64 bg-gray-800 text-white p-4">
+    <aside class="w-64 bg-gray-800 text-white p-4">
         <h1 class="text-2xl font-bold mb-4">SQLite Viewer</h1>
         <ul>
             <?php foreach ($tables as $table): ?>
@@ -308,10 +308,10 @@ if ($action === 'download_json' && $currentTable) {
                 </li>
             <?php endforeach; ?>
         </ul>
-    </div>
+    </aside>
 
     <!-- Main content -->
-    <div class="flex-1 p-8 overflow-auto">
+    <main class="flex-1 p-8 overflow-auto">
         <?php
         function findColumnWidth(string $column): int
         {
@@ -489,7 +489,7 @@ if ($action === 'download_json' && $currentTable) {
         <?php else: ?>
             <p class="text-xl">Select a table from the sidebar to view its contents.</p>
         <?php endif; ?>
-    </div>
+    </main>
 </div>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
