@@ -13,6 +13,8 @@ if (file_exists(__DIR__.'/dev-lib.php')) {
     require __DIR__.'/dev-lib.php';
 }
 
+const SQLITE_VIEWER_VERSION = 'v0.1.0-dev';
+
 /**
  * Default port for the SQLite Viewer web server.
  *
@@ -383,8 +385,8 @@ function formatSize(int $bytes): string
     <style>[x-cloak] { display: none !important; }</style>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
-<div class="flex h-screen" x-data="{ showStructure: false }" @keydown.escape="showStructure = false">
+<body class="bg-gray-100 flex flex-col min-h-screen">
+<div class="flex flex-1" x-data="{ showStructure: false }" @keydown.escape="showStructure = false">
     <!-- Sidebar -->
     <aside class="w-52 bg-gray-800 text-white p-4">
         <h1 class="text-2xl font-bold mb-2">
@@ -621,6 +623,17 @@ function formatSize(int $bytes): string
         <?php endif; ?>
     </main>
 </div>
+<footer class="bg-gray-700 text-white p-4 text-sm">
+    <div class="container mx-auto flex justify-center items-center text-gray-300 gap-4">
+        <small class="text-sm">
+            <a href="https://github.com/caendesilva/php-sqlite-viewer" class="text-indigo-300 hover:text-indigo-400" target="_blank" rel="noopener noreferrer">PHP SQLite Viewer</a> <?= SQLITE_VIEWER_VERSION ?>
+        </small>
+
+        <small class="text-sm">
+            Database: <?= htmlspecialchars($dbFullPath) ?>
+        </small>
+    </div>
+</footer>
 <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
 </html>
