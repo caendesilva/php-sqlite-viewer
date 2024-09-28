@@ -168,10 +168,15 @@ function getTableInfo(SQLite3 $db, string $table): array
         $columnCount++;
     }
 
+    // Get table size
+    $result = $db->query("SELECT SUM(length(hex(data))) as size FROM '$table'");
+    $size = $result->fetchArray(SQLITE3_ASSOC)['size'];
+
     return [
         'name' => $table,
         'rows' => $count,
         'columns' => $columnCount,
+        'size' => $size,
     ];
 }
 
@@ -349,6 +354,17 @@ function findPrettyDbName(): string
     return basename($dbFullPath);
 }
 
+function formatSize(int $bytes): string
+{
+    $units = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB'];
+    $bytes = max($bytes, 0);
+    $pow = floor(($bytes ? log($bytes) : 0) / log(1024));
+    $pow = min($pow, count($units) - 1);
+    $bytes /= (1 << (10 * $pow));
+
+    return round($bytes, 2) . ' ' . $units[$pow];
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -397,6 +413,7 @@ function findPrettyDbName(): string
                         <th class="py-3 px-6 text-left">Table Name</th>
                         <th class="py-3 px-6 text-right">Rows</th>
                         <th class="py-3 px-6 text-right">Columns</th>
+                        <th class="py-3 px-6 text-right">Size</th>
                         <th class="py-3 px-6 text-right">Actions</th>
                     </tr>
                     </thead>
@@ -415,6 +432,11 @@ function findPrettyDbName(): string
                             </td>
                             <td class="py-3 px-6 text-right">
                                 <?= $tableInfo['columns'] ?>
+                            </td>
+                            <td class="py-3 px-6 text-right">
+                                <span title="<?= $tableInfo['size'] ?> bytes" class="cursor-help">
+                                    <?= formatSize($tableInfo['size']) ?>
+                                </span>
                             </td>
                             <td class="py-3 px-6 text-right">
                                 <a href="?table=<?= urlencode($table) ?>" class="text-blue-600 hover:text-blue-900 mr-2">View</a>
