@@ -157,6 +157,24 @@ function getTables(SQLite3 $db): array
     return $tables;
 }
 
+function getTableInfo(SQLite3 $db, string $table): array
+{
+    $result = $db->query("SELECT COUNT(*) as count FROM '$table'");
+    $count = $result->fetchArray(SQLITE3_ASSOC)['count'];
+
+    $result = $db->query("PRAGMA table_info('$table')");
+    $columnCount = 0;
+    while ($result->fetchArray(SQLITE3_ASSOC)) {
+        $columnCount++;
+    }
+
+    return [
+        'name' => $table,
+        'rows' => $count,
+        'columns' => $columnCount,
+    ];
+}
+
 function getTableData(SQLite3 $db, string $table, int $page = 1, int $perPage = 20, string $sortColumn = null, string $sortOrder = null): array
 {
     $offset = ($page - 1) * $perPage;
@@ -265,7 +283,7 @@ function format_database_value($value): string
 }
 
 $tables = getTables($db);
-$currentTable = $_GET['table'] ?? $tables[0] ?? null;
+$currentTable = $_GET['table'] ?? null;
 $page = isset($_GET['page']) ? max(1, intval($_GET['page'])) : 1;
 $perPage = 100;
 
@@ -345,8 +363,12 @@ function findPrettyDbName(): string
 <div class="flex h-screen" x-data="{ showStructure: false }" @keydown.escape="showStructure = false">
     <!-- Sidebar -->
     <aside class="w-52 bg-gray-800 text-white p-4">
-        <h1 class="text-2xl font-bold mb-2">SQLite Viewer</h1>
-        <h2 class="text-sm text-gray-400 mb-4" title="<?= htmlspecialchars($dbFullPath) ?>"><?= htmlspecialchars(findPrettyDbName()) ?></h2>
+        <h1 class="text-2xl font-bold mb-2">
+            <a href="/" class="hover:text-gray-300">SQLite Viewer</a>
+        </h1>
+        <h2 class="text-sm text-gray-400 mb-4" title="<?= htmlspecialchars($dbFullPath) ?>">
+            <a href="/" class="hover:text-gray-300"><?= htmlspecialchars(findPrettyDbName()) ?></a>
+        </h2>
         <div>
             <hr class="border-t border-gray-700 my-4">
         </div>
@@ -366,7 +388,24 @@ function findPrettyDbName(): string
 
     <!-- Main content -->
     <main class="flex-1 p-8 overflow-auto">
-        <?php if ($currentTable): ?>
+        <?php if (! $currentTable): ?>
+            <h2 class="text-3xl font-bold mb-6">Database Overview</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <?php foreach ($tables as $table):
+                    $tableInfo = getTableInfo($db, $table);
+                    ?>
+                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
+                        <h3 class="text-xl font-semibold mb-4">
+                            <a href="?table=<?= urlencode($table) ?>" class="text-blue-600 hover:text-blue-800">
+                                <?= htmlspecialchars($table) ?>
+                            </a>
+                        </h3>
+                        <p class="text-gray-600 mb-2">Rows: <?= number_format($tableInfo['rows']) ?></p>
+                        <p class="text-gray-600">Columns: <?= $tableInfo['columns'] ?></p>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        <?php else: ?>
             <div class="flex justify-between items-center mb-4">
                 <h2 class="text-3xl font-bold"><?= htmlspecialchars($currentTable) ?></h2>
                 <div class="flex space-x-2">
@@ -530,9 +569,6 @@ function findPrettyDbName(): string
                 </div>
                 <a href="?table=<?= urlencode($currentTable) ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="mt-4 inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Back to Table</a>
             <?php endif; ?>
-
-        <?php else: ?>
-            <p class="text-xl">Select a table from the sidebar to view its contents.</p>
         <?php endif; ?>
     </main>
 </div>
