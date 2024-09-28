@@ -390,20 +390,40 @@ function findPrettyDbName(): string
     <main class="flex-1 p-8 overflow-auto">
         <?php if (! $currentTable): ?>
             <h2 class="text-3xl font-bold mb-6">Database Overview</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <?php foreach ($tables as $table):
-                    $tableInfo = getTableInfo($db, $table);
-                    ?>
-                    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow duration-300">
-                        <h3 class="text-xl font-semibold mb-4">
-                            <a href="?table=<?= urlencode($table) ?>" class="text-blue-600 hover:text-blue-800">
-                                <?= htmlspecialchars($table) ?>
-                            </a>
-                        </h3>
-                        <p class="text-gray-600 mb-2">Rows: <?= number_format($tableInfo['rows']) ?></p>
-                        <p class="text-gray-600">Columns: <?= $tableInfo['columns'] ?></p>
-                    </div>
-                <?php endforeach; ?>
+            <div class="bg-white shadow-md rounded-lg overflow-hidden">
+                <table class="min-w-full">
+                    <thead>
+                    <tr class="bg-gray-200 text-gray-600 uppercase text-xs leading-normal">
+                        <th class="py-3 px-6 text-left">Table Name</th>
+                        <th class="py-3 px-6 text-right">Rows</th>
+                        <th class="py-3 px-6 text-right">Columns</th>
+                        <th class="py-3 px-6 text-right">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody class="text-gray-600 text-sm font-light">
+                    <?php foreach ($tables as $table):
+                        $tableInfo = getTableInfo($db, $table);
+                        ?>
+                        <tr class="border-b border-gray-200 hover:bg-gray-100">
+                            <td class="py-3 px-6 text-left whitespace-nowrap">
+                                <a href="?table=<?= urlencode($table) ?>" class="font-medium text-blue-600 hover:text-blue-900">
+                                    <?= htmlspecialchars($table) ?>
+                                </a>
+                            </td>
+                            <td class="py-3 px-6 text-right">
+                                <?= number_format($tableInfo['rows']) ?>
+                            </td>
+                            <td class="py-3 px-6 text-right">
+                                <?= $tableInfo['columns'] ?>
+                            </td>
+                            <td class="py-3 px-6 text-right">
+                                <a href="?table=<?= urlencode($table) ?>" class="text-blue-600 hover:text-blue-900 mr-2">View</a>
+                                <a href="?table=<?= urlencode($table) ?>&action=download_json" class="text-green-600 hover:text-green-900">Download</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
         <?php else: ?>
             <div class="flex justify-between items-center mb-4">
