@@ -284,6 +284,7 @@ if ($action === 'download_json' && $currentTable) {
     exit;
 }
 
+$dbFullPath = realpath($dbPath) ?: $dbPath;
 $dbName = basename($dbPath);
 
 ?>
@@ -299,18 +300,24 @@ $dbName = basename($dbPath);
 <body class="bg-gray-100">
 <div class="flex h-screen" x-data="{ showStructure: false }" @keydown.escape="showStructure = false">
     <!-- Sidebar -->
-    <aside class="w-64 bg-gray-800 text-white p-4">
+    <aside class="w-52 bg-gray-800 text-white p-4">
         <h1 class="text-2xl font-bold mb-2">SQLite Viewer</h1>
-        <h2 class="text-sm text-gray-400 mb-4"><?= htmlspecialchars($dbName) ?></h2>
-        <ul>
-            <?php foreach ($tables as $table): ?>
-                <li class="mb-1 -ml-2">
-                    <a href="?table=<?= urlencode($table) ?>" class="block py-1.5 px-2 rounded hover:bg-gray-700 transition-colors duration-150 text-gray-300 leading-none <?= $currentTable === $table ? 'text-white border-l-2 border-indigo-500 rounded-l-none -ml-[2px]' : '' ?>">
-                        <?= htmlspecialchars($table) ?>
-                    </a>
-                </li>
-            <?php endforeach; ?>
-        </ul>
+        <h2 class="text-sm text-gray-400 mb-4" title="<?= htmlspecialchars($dbFullPath) ?>"><?= htmlspecialchars($dbName) ?></h2>
+        <div>
+            <hr class="border-t border-gray-700 my-4">
+        </div>
+        <nav>
+            <h3 class="text-sm text-gray-400 uppercase font-bold mb-2">Tables</h3>
+            <ul>
+                <?php foreach ($tables as $table): ?>
+                    <li class="mb-1 -ml-2 text-sm">
+                        <a href="?table=<?= urlencode($table) ?>" class="block py-1.5 px-2 rounded hover:bg-gray-700 transition-colors duration-150 text-gray-300 leading-none <?= $currentTable === $table ? 'text-white border-l-2 border-indigo-500 rounded-l-none -ml-[2px]' : '' ?>">
+                            <?= htmlspecialchars($table) ?>
+                        </a>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </nav>
     </aside>
 
     <!-- Main content -->
