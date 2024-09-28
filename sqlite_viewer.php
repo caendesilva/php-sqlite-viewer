@@ -447,8 +447,7 @@ function formatSize(int $bytes): string
                                 </span>
                             </td>
                             <td class="py-3 px-6 text-right">
-                                <a href="?table=<?= urlencode($table) ?>" class="text-blue-600 hover:text-blue-900 mr-2">View</a>
-                                <a href="?table=<?= urlencode($table) ?>&action=download_json" class="text-green-600 hover:text-green-900">Download</a>
+                                <a href="?table=<?= urlencode($table) ?>" class="text-blue-600 hover:text-blue-900">View</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
