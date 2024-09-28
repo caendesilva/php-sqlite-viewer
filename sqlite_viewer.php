@@ -393,13 +393,15 @@ function formatSize(int $bytes): string
             <a href="/" class="hover:text-gray-300">SQLite Viewer</a>
         </h1>
         <h2 class="text-sm text-gray-400 mb-4" title="<?= htmlspecialchars($dbFullPath) ?>">
-            <a href="/" class="hover:text-gray-300"><?= htmlspecialchars(findPrettyDbName()) ?></a>
+            <?= htmlspecialchars(findPrettyDbName()) ?>
         </h2>
         <div>
             <hr class="border-t border-gray-700 my-4">
         </div>
         <nav>
-            <h3 class="text-sm text-gray-400 uppercase font-bold mb-2">Tables</h3>
+            <h3 class="text-sm text-gray-400 uppercase font-bold mb-2">
+                <a href="/" class="hover:text-gray-300">Tables</a>
+            </h3>
             <ul>
                 <?php foreach ($tables as $table): ?>
                     <li class="mb-1 -ml-2 text-sm">
