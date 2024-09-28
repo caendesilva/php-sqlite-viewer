@@ -427,34 +427,40 @@ if ($action === 'download_json' && $currentTable) {
                             </tr>
                             </thead>
                             <tbody class="text-gray-600 text-sm font-light">
-                            <?php foreach ($data as $row): ?>
-                                <tr class="border-b border-gray-200 hover:bg-[#eaecef] transition-colors duration-50">
-                                    <?php foreach ($columns as $key => $column): ?>
-                                        <td class="py-2 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left">
-                                            <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: <?= findColumnWidth($column); ?>ch;">
-                                                <?php
-                                                $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
-                                                if ($idForView !== null && $column === $primaryKey): ?>
-                                                    <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="text-blue-600 hover:text-blue-900">
-                                                        <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
-                                                    </a>
-                                                <?php else: ?>
-                                                    <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
-                                                <?php endif; ?>
-                                            </div>
-                                        </td>
-                                    <?php endforeach; ?>
-                                    <td class="py-2 px-3 pr-4 text-right whitespace-nowrap">
-                                        <?php
-                                        $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
-                                        if ($idForView !== null): ?>
-                                            <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="text-blue-600 hover:text-blue-900">View</a>
-                                        <?php else: ?>
-                                            <span class="text-gray-400">No ID</span>
-                                        <?php endif; ?>
-                                    </td>
+                            <?php if (empty($data)): ?>
+                                <tr>
+                                    <td class="py-4 px-3 text-base text-center" colspan="<?= count($columns) + 1 ?>">No records found.</td>
                                 </tr>
-                            <?php endforeach; ?>
+                            <?php else: ?>
+                                <?php foreach ($data as $row): ?>
+                                    <tr class="border-b border-gray-200 hover:bg-[#eaecef] transition-colors duration-50">
+                                        <?php foreach ($columns as $key => $column): ?>
+                                            <td class="py-2 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left">
+                                                <div class="whitespace-nowrap overflow-hidden overflow-ellipsis max-w-xs" style="max-width: <?= findColumnWidth($column); ?>ch;">
+                                                    <?php
+                                                    $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
+                                                    if ($idForView !== null && $column === $primaryKey): ?>
+                                                        <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="text-blue-600 hover:text-blue-900">
+                                                            <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
+                                                        </a>
+                                                    <?php else: ?>
+                                                        <?= htmlspecialchars(substr($row[$column] ?? '', 0, 255)) ?>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </td>
+                                        <?php endforeach; ?>
+                                        <td class="py-2 px-3 pr-4 text-right whitespace-nowrap">
+                                            <?php
+                                            $idForView = $row['rowid'] ?? $row[$primaryKey] ?? null;
+                                            if ($idForView !== null): ?>
+                                                <a href="?table=<?= urlencode($currentTable) ?>&action=view&id=<?= $idForView ?><?= $sortColumn ? "&sort=$sortColumn&order=$sortOrder" : '' ?>" class="text-blue-600 hover:text-blue-900">View</a>
+                                            <?php else: ?>
+                                                <span class="text-gray-400">No ID</span>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
