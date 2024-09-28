@@ -417,7 +417,7 @@ if ($action === 'download_json' && $currentTable) {
                                     }
                                     $sortParams = $newSortOrder ? "&sort=$column&order=$newSortOrder" : '';
                                     ?>
-                                    <th class="py-3 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left whitespace-nowrap">
+                                    <th class="py-3 px-3 <?= $key === 0 ? 'pl-4' : '' ?> text-left whitespace-nowrap" style="min-width: <?= findColumnWidth($column); ?>ch;">
                                         <a href="?table=<?= urlencode($currentTable) ?><?= $sortParams ?>&page=<?= $page ?>" class="hover:text-gray-900">
                                             <?= htmlspecialchars($column) ?> <?= $sortIndicator ?>
                                         </a>
